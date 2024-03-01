@@ -1,13 +1,19 @@
-import React from 'react';
-import LoginFormComponent from './components/LoginFormComponent';
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import LoginForm from "./components/LoginForm";
+import SignupForm from "./components/SignupForm";
+import Home from "./components/Home";
 
-const App = () => {
+function App() {
   return (
-    <div>
-      <h1>Fast Food Fast</h1>
-      <LoginFormComponent />
-    </div>
+    <Router>
+      <Routes>
+        <Route exact path="/" element={<Home />} />
+        <Route exact path="/login" element={<LoginForm />} />
+        <Route exact path="/signup" element={<SignupForm />} />
+      </Routes>
+    </Router>
   );
-};
+}
 
 export default App;
