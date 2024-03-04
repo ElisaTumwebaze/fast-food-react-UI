@@ -1,5 +1,7 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import Spinner from "./Spinner";
 
 // Styled components for the login form
 const LoginFormContainer = styled.div`
@@ -26,9 +28,9 @@ const Input = styled.input`
   border: 1px solid #ccc;
   border-radius: 4px;
 `;
-
-const ErrorMessage = styled.div`
+const ErrorMsg = styled.div`
   color: red;
+  font-size: 14px;
   margin-top: 5px;
 `;
 
@@ -44,31 +46,80 @@ const SubmitButton = styled.button`
 
 // Login form component
 const LoginForm = () => {
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
-  const [error, setError] = useState('');
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  const [errors, setErrors] = useState({});
+  const navigate = useNavigate();
 
-  const handleLogin = () => {
-    // Dummy login logic, you should replace this with actual authentication logic
-    if (username === 'example' && password === 'password') {
-      alert('Login successful!');
-    } else {
-      setError('Invalid username or password.');
+  const validateForm = () => {
+    const errors = {};
+
+    if (username.trim() === "") {
+      errors.username = "Username is required";
+    }
+
+    if (password.trim() === "") {
+      errors.password = "Password is required";
+    }
+
+    setErrors(errors);
+
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const response = await fetch("http://localhost:4000/auth/login", {
+        method: "POST",
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({ username, password }),
+      });
+
+      if (response.status === 200) {
+        setIsLoading(false);
+        const { token } = await response.json();
+        localStorage.setItem("token", token);
+        console.log("Form submitted:", { username, password });
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      setIsLoading(false);
+      console.error("Login error:", error);
     }
   };
 
   return (
     <LoginFormContainer>
+      {isLoading && <Spinner />}
       <h2>Login</h2>
       <FormField>
         <Label>Username:</Label>
-        <Input type="text" value={username} onChange={(e) => setUsername(e.target.value)} />
+        <Input
+          type="text"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+        />
+        {errors.username && <ErrorMsg>{errors.username}</ErrorMsg>}
       </FormField>
       <FormField>
         <Label>Password:</Label>
-        <Input type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+        <Input
+          type="password"
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
+        {errors.password && <ErrorMsg>{errors.password}</ErrorMsg>}
       </FormField>
-      {error && <ErrorMessage>{error}</ErrorMessage>}
       <SubmitButton onClick={handleLogin}>Login</SubmitButton>
     </LoginFormContainer>
   );

@@ -7,6 +7,7 @@ const SignupFormContainer = styled.div`
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
+  padding-right: 20px;
 `;
 
 const FormField = styled.div`
