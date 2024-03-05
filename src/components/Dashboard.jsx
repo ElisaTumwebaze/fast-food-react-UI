@@ -1,47 +1,72 @@
-// Dashboard.js
 import React from 'react';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome, faUser, faCartShopping, faBowlFood, faSignOut, faEdit} from '@fortawesome/free-solid-svg-icons';
 
+// Define styled components
 const Container = styled.div`
   display: flex;
-`;
-
-const SideNav = styled.div`
-  width: 250px;
-  background-color: #333;
-  padding: 20px;
+  flex-direction: row;
+  height: 100vh;
 `;
 
 const MainContent = styled.div`
   flex: 1;
   padding: 20px;
-  text-align: center;
+`;
+const Sidebar = styled.div`
+  width: 200px;
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  height: 100%;
 `;
 
-const Header = styled.h1`
-  color: #333;
+const MenuItem = styled.div`
+  color: white;
+  margin-bottom: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+
+  &:hover {
+    color: lightblue;
+  }
 `;
 
+// Dashboard component
 const Dashboard = () => {
   return (
     <Container>
-      <SideNav>
-        <h2 style={{ color: '#fff' }}>Side Navigation</h2>
-        <ul style={{ listStyleType: 'none', padding: 0 }}>
-          <li style={{ marginBottom: '10px' }}>
-            <a href="#" style={{ color: '#fff', textDecoration: 'none' }}>Link 1</a>
-          </li>
-          <li style={{ marginBottom: '10px' }}>
-            <a href="#" style={{ color: '#fff', textDecoration: 'none' }}>Link 2</a>
-          </li>
-          <li style={{ marginBottom: '10px' }}>
-            <a href="#" style={{ color: '#fff', textDecoration: 'none' }}>Link 3</a>
-          </li>
-        </ul>
-      </SideNav>
+      <Sidebar>
+        <MenuItem>
+          <FontAwesomeIcon icon={faHome} style={{ marginRight: '10px' }} />
+          Home
+        </MenuItem>
+        <MenuItem>
+          <FontAwesomeIcon icon={faUser} style={{ marginRight: '10px' }} />
+          Profile
+        </MenuItem>
+        <MenuItem>
+          <FontAwesomeIcon icon={faBowlFood} style={{ marginRight: '10px' }} />
+          Menu
+        </MenuItem>
+        <MenuItem>
+          <FontAwesomeIcon icon={faEdit} style={{ marginRight: '10px' }} />
+          Update Menu
+        </MenuItem>
+        <MenuItem>
+          <FontAwesomeIcon icon={faCartShopping} style={{ marginRight: '10px' }} />
+          Order
+        </MenuItem>
+        <MenuItem>
+          <FontAwesomeIcon icon={faSignOut} style={{ marginRight: '10px' }} />
+          Signout
+        </MenuItem>
+      </Sidebar>
       <MainContent>
-        <Header>Welcome Fast-Food-Fast</Header>
-        <p>This is the main content area. You can put your content here.</p>
+        <h1>Welcome To Fast Food Fast</h1>
+        <p>This is the main content of the dashboard.</p>
       </MainContent>
     </Container>
   );
