@@ -1,47 +1,77 @@
-// Dashboard.js
 import React from 'react';
 import styled from 'styled-components';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faHome, faUser, faCartShopping, faBowlFood, faSignOut, faEdit} from '@fortawesome/free-solid-svg-icons';
 
+// Define styled components
 const Container = styled.div`
   display: flex;
-`;
-
-const SideNav = styled.div`
-  width: 250px;
-  background-color: #333;
-  padding: 20px;
+  flex-direction: row;
+  height: 100vh;
 `;
 
 const MainContent = styled.div`
   flex: 1;
   padding: 20px;
-  text-align: center;
+`;
+const Sidebar = styled.div`
+  width: 200px;
+  background-color: #333;
+  color: white;
+  padding: 20px;
+  height: 100%;
 `;
 
-const Header = styled.h1`
-  color: #333;
+const MenuItem = styled.div`
+  color: white;
+  margin-bottom: 10px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;  console.log("Form submitted:", { username, password });
+
+  &:hover {
+    color: lightblue;
+  }
+`;
+const StyledIcon = styled(FontAwesomeIcon)`
+    color: #f98f39; 
+    font-size: 24px;
+    margin-right: 10px; 
 `;
 
+// Dashboard component
 const Dashboard = () => {
   return (
     <Container>
-      <SideNav>
-        <h2 style={{ color: '#fff' }}>Side Navigation</h2>
-        <ul style={{ listStyleType: 'none', padding: 0 }}>
-          <li style={{ marginBottom: '10px' }}>
-            <a href="#" style={{ color: '#fff', textDecoration: 'none' }}>Link 1</a>
-          </li>
-          <li style={{ marginBottom: '10px' }}>
-            <a href="#" style={{ color: '#fff', textDecoration: 'none' }}>Link 2</a>
-          </li>
-          <li style={{ marginBottom: '10px' }}>
-            <a href="#" style={{ color: '#fff', textDecoration: 'none' }}>Link 3</a>
-          </li>
-        </ul>
-      </SideNav>
+      <Sidebar>
+        <MenuItem>
+          <StyledIcon icon={faHome} />
+          Home
+        </MenuItem>
+        <MenuItem>
+          <StyledIcon icon={faUser} />
+          Profile
+        </MenuItem>
+        <MenuItem>
+          <StyledIcon icon={faBowlFood} />
+          Menu
+        </MenuItem>
+        <MenuItem>
+          <StyledIcon icon={faEdit}  />
+          Update Menu
+        </MenuItem>
+        <MenuItem>
+          <StyledIcon icon={faCartShopping} />
+          Order
+        </MenuItem>
+        <MenuItem>
+          <StyledIcon icon={faSignOut} />
+          Signout
+        </MenuItem>
+      </Sidebar>
       <MainContent>
-        <Header>Welcome Fast-Food-Fast</Header>
-        <p>This is the main content area. You can put your content here.</p>
+        <h1>Welcome To Fast Food Fast</h1>
+        <p>This is the main content of the dashboard.</p>
       </MainContent>
     </Container>
   );

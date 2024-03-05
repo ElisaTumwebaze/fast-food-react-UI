@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 import Spinner from "./Spinner";
 
 // Styled components for the login form
@@ -51,6 +53,7 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  
 
   const validateForm = () => {
     const errors = {};
@@ -84,17 +87,23 @@ const LoginForm = () => {
         },
         body: JSON.stringify({ username, password }),
       });
+      
+      if (!response.ok) {
+        setIsLoading(false)
+        const errorData = await response.json();
+        throw new Error(errorData.error);
+      }
 
       if (response.status === 200) {
         setIsLoading(false);
         const { token } = await response.json();
         localStorage.setItem("token", token);
-        console.log("Form submitted:", { username, password });
         navigate("/dashboard");
+        toast.success('login Successfully')
       }
     } catch (error) {
       setIsLoading(false);
-      console.error("Login error:", error);
+      toast.error(error.message)
     }
   };
 
@@ -121,6 +130,7 @@ const LoginForm = () => {
         {errors.password && <ErrorMsg>{errors.password}</ErrorMsg>}
       </FormField>
       <SubmitButton onClick={handleLogin}>Login</SubmitButton>
+      <ToastContainer position="top-right" autoClose={5000} />
     </LoginFormContainer>
   );
 };
