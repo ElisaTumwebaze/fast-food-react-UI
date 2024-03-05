@@ -27,11 +27,16 @@ const MenuItem = styled.div`
   margin-bottom: 10px;
   cursor: pointer;
   display: flex;
-  align-items: center;
+  align-items: center;  console.log("Form submitted:", { username, password });
 
   &:hover {
     color: lightblue;
   }
+`;
+const StyledIcon = styled(FontAwesomeIcon)`
+    color: #f98f39; 
+    font-size: 24px;
+    margin-right: 10px; 
 `;
 
 // Dashboard component
@@ -40,27 +45,27 @@ const Dashboard = () => {
     <Container>
       <Sidebar>
         <MenuItem>
-          <FontAwesomeIcon icon={faHome} style={{ marginRight: '10px' }} />
+          <StyledIcon icon={faHome} />
           Home
         </MenuItem>
         <MenuItem>
-          <FontAwesomeIcon icon={faUser} style={{ marginRight: '10px' }} />
+          <StyledIcon icon={faUser} />
           Profile
         </MenuItem>
         <MenuItem>
-          <FontAwesomeIcon icon={faBowlFood} style={{ marginRight: '10px' }} />
+          <StyledIcon icon={faBowlFood} />
           Menu
         </MenuItem>
         <MenuItem>
-          <FontAwesomeIcon icon={faEdit} style={{ marginRight: '10px' }} />
+          <StyledIcon icon={faEdit}  />
           Update Menu
         </MenuItem>
         <MenuItem>
-          <FontAwesomeIcon icon={faCartShopping} style={{ marginRight: '10px' }} />
+          <StyledIcon icon={faCartShopping} />
           Order
         </MenuItem>
         <MenuItem>
-          <FontAwesomeIcon icon={faSignOut} style={{ marginRight: '10px' }} />
+          <StyledIcon icon={faSignOut} />
           Signout
         </MenuItem>
       </Sidebar>

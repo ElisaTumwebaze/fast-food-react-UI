@@ -53,6 +53,7 @@ const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
+  
 
   const validateForm = () => {
     const errors = {};
@@ -97,14 +98,12 @@ const LoginForm = () => {
         setIsLoading(false);
         const { token } = await response.json();
         localStorage.setItem("token", token);
-        console.log("Form submitted:", { username, password });
         navigate("/dashboard");
-        toast.success('logined Successfully')
+        toast.success('login Successfully')
       }
     } catch (error) {
       setIsLoading(false);
       toast.error(error.message)
-      console.error("Login error:", error);
     }
   };
 
