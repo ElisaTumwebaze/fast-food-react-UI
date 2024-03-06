@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Spinner from "./Spinner";
@@ -9,6 +10,7 @@ import Spinner from "./Spinner";
 const LoginFormContainer = styled.div`
   max-width: 400px;
   margin: 0 auto;
+  margin-top:20px;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
@@ -24,11 +26,11 @@ const Label = styled.label`
 `;
 
 const Input = styled.input`
-  width: 100%;
+  width: 95%;
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
 `;
 const ErrorMsg = styled.div`
   color: red;
@@ -44,6 +46,11 @@ const SubmitButton = styled.button`
   border: none;
   border-radius: 4px;
   cursor: pointer;
+`;
+const StyledLink = styled(Link)`
+  color: #007bff;
+  text-decoration: none;
+  margin-left: 10px;
 `;
 
 // Login form component
@@ -130,6 +137,7 @@ const LoginForm = () => {
         {errors.password && <ErrorMsg>{errors.password}</ErrorMsg>}
       </FormField>
       <SubmitButton onClick={handleLogin}>Login</SubmitButton>
+      <StyledLink to="/signup">Do not have an acount Create</StyledLink>
       <ToastContainer position="top-right" autoClose={5000} />
     </LoginFormContainer>
   );

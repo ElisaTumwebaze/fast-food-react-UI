@@ -1,16 +1,25 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
+import { Link } from 'react-router-dom';
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Spinner from "./Spinner";
+
 
 const SignupFormContainer = styled.div`
+  background: #fff;
+  box-shadow: 0px 12px 20px rgb(0, 0, 0, 0.1);
   max-width: 400px;
   margin: 0 auto;
+  margin-top:20px;
   padding: 20px;
   border: 1px solid #ccc;
   border-radius: 8px;
-  padding-right: 20px;
 `;
 
 const FormField = styled.div`
+
   margin-bottom: 20px;
 `;
 
@@ -20,11 +29,11 @@ const Label = styled.label`
 `;
 
 const Input = styled.input`
-  width: 100%;
+  width: 95%;
   padding: 10px;
   font-size: 16px;
   border: 1px solid #ccc;
-  border-radius: 4px;
+  border-radius: 8px;
 `;
 
 const ErrorMessage = styled.div`
@@ -41,45 +50,81 @@ const SubmitButton = styled.button`
   border-radius: 4px;
   cursor: pointer;
 `;
+const StyledLink = styled(Link)`
+  color: #007bff;
+  text-decoration: none;
+  margin-left: 10px;
+`;
 
 const SignupForm = () => {
-  const [username, setUsername] = useState('');
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
+  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
   const [errors, setErrors] = useState({});
+  const [isLoading, setIsLoading] = useState(false);
+  const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const validationErrors = {};
+  const validateForm = () => {
+    const errors = {};
+
     if (!username.trim()) {
-      validationErrors.username = 'Username is required';
+      errors.username = "Username is required";
     }
     if (!email.trim()) {
-      validationErrors.email = 'Email is required';
+      errors.email = "Email is required";
     } else if (!/\S+@\S+\.\S+/.test(email)) {
-      validationErrors.email = 'Email is invalid';
+      errors.email = "Email is invalid";
     }
     if (!password.trim()) {
-      validationErrors.password = 'Password is required';
+      errors.password = "Password is required";
     } else if (password.length < 6) {
-      validationErrors.password = 'Password must be at least 6 characters long';
+      errors.password = "Password must be at least 6 characters long";
     }
 
-    if (Object.keys(validationErrors).length === 0) {
-      // Form submission logic here (you can replace it with your own logic)
-      console.log('Form submitted:', { username, email, password });
-      // Clear the form after submission
-      setUsername('');
-      setEmail('');
-      setPassword('');
-      setErrors({});
-    } else {
-      setErrors(validationErrors);
+    setErrors(errors);
+
+    return Object.keys(errors).length === 0;
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!validateForm()) {
+      return;
+    }
+    try {
+      setIsLoading(true);
+      const response = await fetch("http://localhost:4000/auth/signup", {
+        method: "POST",
+        headers: {
+          Accept: "application/json, text/plain, */*",
+          "Content-Type": "application/json",
+          "Access-Control-Allow-Origin": "*",
+        },
+        body: JSON.stringify({ username, email, password }),
+      });
+
+      if (!response.ok) {
+        setIsLoading(false);
+        const errorData = await response.json();
+        throw new Error(errorData.error);
+      }
+
+      if (response.status === 201) {
+        setIsLoading(false);
+        const { token } = await response.json();
+        localStorage.setItem("token", token);
+        navigate("/dashboard");
+        toast.success("login Successfully");
+      }
+    } catch (error) {
+      setIsLoading(false);
+      toast.error(error.message);
     }
   };
 
   return (
     <SignupFormContainer>
+      {isLoading && <Spinner />}
       <h2>Signup</h2>
       <form onSubmit={handleSubmit}>
         <FormField>
@@ -110,7 +155,9 @@ const SignupForm = () => {
           {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
         </FormField>
         <SubmitButton type="submit">Signup</SubmitButton>
+        <StyledLink to="/login">Already have an account Login</StyledLink>
       </form>
+      <ToastContainer position="top-right" autoClose={5000} />
     </SignupFormContainer>
   );
 };

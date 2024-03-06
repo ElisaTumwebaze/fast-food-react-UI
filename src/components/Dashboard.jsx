@@ -27,7 +27,7 @@ const MenuItem = styled.div`
   margin-bottom: 10px;
   cursor: pointer;
   display: flex;
-  align-items: center;  console.log("Form submitted:", { username, password });
+  align-items: center;
 
   &:hover {
     color: lightblue;
