@@ -1,66 +1,24 @@
 import React, { useState } from "react";
-import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import Spinner from "./Spinner";
+import {
+  FormContainer,
+  FormField,
+  Label,
+  Input,
+  ErrorMessage,
+  SubmitButton,
+  StyledLink
+} from "./Styles";
 
-// Styled components for the login form
-const LoginFormContainer = styled.div`
-  max-width: 400px;
-  margin: 0 auto;
-  margin-top:20px;
-  padding: 20px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-`;
-
-const FormField = styled.div`
-  margin-bottom: 20px;
-`;
-
-const Label = styled.label`
-  display: block;
-  margin-bottom: 5px;
-`;
-
-const Input = styled.input`
-  width: 95%;
-  padding: 10px;
-  font-size: 16px;
-  border: 1px solid #ccc;
-  border-radius: 8px;
-`;
-const ErrorMsg = styled.div`
-  color: red;
-  font-size: 14px;
-  margin-top: 5px;
-`;
-
-const SubmitButton = styled.button`
-  padding: 10px 20px;
-  font-size: 16px;
-  background-color: #007bff;
-  color: #fff;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-`;
-const StyledLink = styled(Link)`
-  color: #007bff;
-  text-decoration: none;
-  margin-left: 10px;
-`;
-
-// Login form component
 const LoginForm = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
-  
 
   const validateForm = () => {
     const errors = {};
@@ -85,7 +43,7 @@ const LoginForm = () => {
     }
     try {
       setIsLoading(true);
-      const response = await fetch("http://localhost:4000/auth/login", {
+      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
         method: "POST",
         headers: {
           Accept: "application/json, text/plain, */*",
@@ -115,7 +73,7 @@ const LoginForm = () => {
   };
 
   return (
-    <LoginFormContainer>
+    <FormContainer>
       {isLoading && <Spinner />}
       <h2>Login</h2>
       <FormField>
@@ -125,7 +83,7 @@ const LoginForm = () => {
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-        {errors.username && <ErrorMsg>{errors.username}</ErrorMsg>}
+        {errors.username && <ErrorMessage>{errors.username}</ErrorMessage>}
       </FormField>
       <FormField>
         <Label>Password:</Label>
@@ -134,12 +92,12 @@ const LoginForm = () => {
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-        {errors.password && <ErrorMsg>{errors.password}</ErrorMsg>}
+        {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
       </FormField>
       <SubmitButton onClick={handleLogin}>Login</SubmitButton>
       <StyledLink to="/signup">Do not have an acount Create</StyledLink>
       <ToastContainer position="top-right" autoClose={5000} />
-    </LoginFormContainer>
+    </FormContainer>
   );
 };
 export default LoginForm;
