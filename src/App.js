@@ -1,13 +1,16 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import LoginForm from "./components/LoginForm";
-import SignupForm from "./components/SignupForm";
+import LoginForm from "./components/loginForm/LoginForm";
+import SignupForm from "./components/signupForm/SignupForm";
 import Home from "./components/Home";
 import Dashboard from "./components/Dashboard";
+import './App.css';
+
 
 function App() {
   
   return (
+    <>
     <Router>
       <Routes>
         <Route exact path="/" element={<Home />} />
@@ -16,6 +19,7 @@ function App() {
         <Route exact path="/dashboard" element={<Dashboard/>} />
       </Routes>
     </Router>
+    </>
   );
 }
 
