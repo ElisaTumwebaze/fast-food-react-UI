@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { ToastContainer, toast } from 'react-toastify';
-import 'react-toastify/dist/ReactToastify.css';
-import Spinner from "./Spinner";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+import Spinner from "../Spinner";
 import {
   FormContainer,
   FormField,
@@ -11,23 +11,34 @@ import {
   ErrorMessage,
   SubmitButton,
   StyledLink
-} from "./Styles";
+} from "../signupForm/Styles";
 
 const LoginForm = () => {
-  const [username, setUsername] = useState("");
-  const [password, setPassword] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
+  const [formData, setFormData] = useState({
+    username: "",
+    password: "",
+  });
+
+  const handleChange = (e) => {
+    const { name, value } = e.target;
+    setFormData((prevState) => ({
+      ...prevState,
+      [name]: value,
+    }));
+  };
+
   const validateForm = () => {
     const errors = {};
 
-    if (username.trim() === "") {
+    if (formData.username.trim() === "") {
       errors.username = "Username is required";
     }
 
-    if (password.trim() === "") {
+    if (formData.password.trim() === "") {
       errors.password = "Password is required";
     }
 
@@ -43,18 +54,21 @@ const LoginForm = () => {
     }
     try {
       setIsLoading(true);
-      const response = await fetch(`${process.env.REACT_APP_API_URL}/auth/login`, {
-        method: "POST",
-        headers: {
-          Accept: "application/json, text/plain, */*",
-          "Content-Type": "application/json",
-          "Access-Control-Allow-Origin": "*",
-        },
-        body: JSON.stringify({ username, password }),
-      });
-      
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/auth/login`,
+        {
+          method: "POST",
+          headers: {
+            Accept: "application/json, text/plain, */*",
+            "Content-Type": "application/json",
+            "Access-Control-Allow-Origin": "*",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
+
       if (!response.ok) {
-        setIsLoading(false)
+        setIsLoading(false);
         const errorData = await response.json();
         throw new Error(errorData.error);
       }
@@ -64,11 +78,11 @@ const LoginForm = () => {
         const { token } = await response.json();
         localStorage.setItem("token", token);
         navigate("/dashboard");
-        toast.success('login Successfully')
+        toast.success("login Successfully");
       }
     } catch (error) {
       setIsLoading(false);
-      toast.error(error.message)
+      toast.error(error.message);
     }
   };
 
@@ -80,8 +94,9 @@ const LoginForm = () => {
         <Label>Username:</Label>
         <Input
           type="text"
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
+          name="username"
+          value={formData.username}
+          onChange={handleChange}
         />
         {errors.username && <ErrorMessage>{errors.username}</ErrorMessage>}
       </FormField>
@@ -89,8 +104,9 @@ const LoginForm = () => {
         <Label>Password:</Label>
         <Input
           type="password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
+          name="password"
+          value={formData.password}
+          onChange={handleChange}
         />
         {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
       </FormField>
