@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import Spinner from "../Spinner";
+import Spinner from "../spinner/Spinner";
 import {
   FormContainer,
   FormField,
@@ -10,8 +10,8 @@ import {
   Input,
   ErrorMessage,
   SubmitButton,
-  StyledLink
-} from "../signupForm/Styles";
+  StyledLink,
+} from "./Styles";
 
 const LoginForm = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -90,28 +90,30 @@ const LoginForm = () => {
     <FormContainer>
       {isLoading && <Spinner />}
       <h2>Login</h2>
-      <FormField>
-        <Label>Username:</Label>
-        <Input
-          type="text"
-          name="username"
-          value={formData.username}
-          onChange={handleChange}
-        />
-        {errors.username && <ErrorMessage>{errors.username}</ErrorMessage>}
-      </FormField>
-      <FormField>
-        <Label>Password:</Label>
-        <Input
-          type="password"
-          name="password"
-          value={formData.password}
-          onChange={handleChange}
-        />
-        {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
-      </FormField>
-      <SubmitButton onClick={handleLogin}>Login</SubmitButton>
-      <StyledLink to="/signup">Do not have an acount Create</StyledLink>
+      <form onSubmit={handleLogin}>
+        <FormField>
+          <Label>Username:</Label>
+          <Input
+            type="text"
+            name="username"
+            value={formData.username}
+            onChange={handleChange}
+          />
+          {errors.username && <ErrorMessage>{errors.username}</ErrorMessage>}
+        </FormField>
+        <FormField>
+          <Label>Password:</Label>
+          <Input
+            type="password"
+            name="password"
+            value={formData.password}
+            onChange={handleChange}
+          />
+          {errors.password && <ErrorMessage>{errors.password}</ErrorMessage>}
+        </FormField>
+        <SubmitButton type="submit">Login</SubmitButton>
+        <StyledLink to="/signup">Do not have an acount Create</StyledLink>
+      </form>
       <ToastContainer position="top-right" autoClose={5000} />
     </FormContainer>
   );
