@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ToastContainer, toast } from "react-toastify";
+import Spinner from "../spinner/Spinner";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import {
   StyledIcon,
@@ -10,38 +11,52 @@ import {
   Label,
   Input,
   ErrorMsg,
-  SubmitButton
-}
-from "./Style"
+  SubmitButton,
+} from "./Style";
 
-
-
-const ModalForm = ({ isOpen, closeModal}) => {
-  const [foodname, setFoodname] = useState("");
-  const [price, setPrice] = useState("");
-  const [image, setImage] = useState(null);
+const ModalForm = ({ isOpen, closeModal }) => {
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState({
+    foodname: '',
+    price: '',
+    image: null
+  });
+
+  const handleChange = (event) => {
+    const { name, value, type } = event.target;
+    const newValue = type === 'file' ? event.target.files[0] : value;
+
+    setFormData({
+      ...formData,
+      [name]: newValue
+    });
+  };
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    
+    setLoading(true);
+
     const validateForm = () => {
       let isValid = true;
       const newErrors = {};
 
-      if (!foodname.trim()) {
+      if (!formData.foodname.trim()) {
         newErrors.foodname = "Food name is required";
         isValid = false;
+        setLoading(false)
       }
 
-      if (!price.trim()) {
+      if (!formData.price.trim()) {
         newErrors.price = "Price is required";
         isValid = false;
+        setLoading(false)
       }
 
-      if (!image) {
+      if (!formData.image) {
         newErrors.image = "File upload is required";
         isValid = false;
+        setLoading(false)
       }
 
       setErrors(newErrors);
@@ -53,35 +68,36 @@ const ModalForm = ({ isOpen, closeModal}) => {
     }
 
     try {
-      const token = localStorage.getItem('token');
-      const formData = new FormData();
-      formData.append('foodname', foodname);
-      formData.append('price', price);
-      formData.append('image', image);
+      const token = localStorage.getItem("token");
+      const formDataToSend = new FormData();
+      formDataToSend.append("foodname", formData.foodname);
+      formDataToSend.append("price", formData.price);
+      formDataToSend.append("image", formData.image);
 
       const response = await fetch(`${process.env.REACT_APP_API_URL}/menu`, {
         method: "POST",
-        body: formData,
+        body: formDataToSend,
         headers: {
           Accept: "application/json, text/plain, */*",
-          'Content-Type': 'multipart/form-data',
-          "Access-Control-Allow-Origin": "*",
-
           Authorization: `Bearer ${token}`,
         },
       });
       if (response.status === 201) {
+        setLoading(false)
         toast.success("Added Successfully");
       }
 
       // Reset form fields after successful submission
-      setFoodname("");
-      setPrice("");
-      setImage(null);
+      setFormData({
+        foodname: '',
+        price: '',
+        image: ''
+      });
       setErrors({});
-      closeModal();
-    // Close the modal after successful submission
+      // Close the modal after successful submission
     } catch (error) {
+      setLoading(false)
+      console.log(error);
       toast.error(error.message);
     }
   };
@@ -99,8 +115,8 @@ const ModalForm = ({ isOpen, closeModal}) => {
                 <Input
                   name="foodname"
                   type="text"
-                  value={foodname}
-                  onChange={(e) => setFoodname(e.target.value)}
+                  value={formData.foodname}
+                  onChange={handleChange}
                 />
                 {errors.foodname && <ErrorMsg>{errors.foodname}</ErrorMsg>}
               </FormGroup>
@@ -109,9 +125,9 @@ const ModalForm = ({ isOpen, closeModal}) => {
                 <Label>Price:</Label>
                 <Input
                   name="price"
+                  value={formData.price}
                   type="number"
-                  value={price}
-                  onChange={(e) => setPrice(e.target.value)}
+                  onChange={handleChange}
                 />
                 {errors.price && <ErrorMsg>{errors.price}</ErrorMsg>}
               </FormGroup>
@@ -121,12 +137,15 @@ const ModalForm = ({ isOpen, closeModal}) => {
                 <Input
                   name="image"
                   type="file"
-                  onChange={(e) => setImage(e.target.files[0])}
+                  onChange={handleChange}
                 />
                 {errors.image && <ErrorMsg>{errors.image}</ErrorMsg>}
               </FormGroup>
-
-              <SubmitButton type="submit">Submit</SubmitButton>
+              {loading ? (
+                <Spinner />
+              ) : (
+                <SubmitButton type="submit">Submit</SubmitButton>
+              )}
             </Form>
             <ToastContainer position="top-right" autoClose={5000} />
           </ModalContent>
