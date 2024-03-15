@@ -79,9 +79,16 @@ const ModalForm = ({ isOpen, closeModal }) => {
         body: formDataToSend,
         headers: {
           Accept: "application/json, text/plain, */*",
-          Authorization: `Bearer ${token}`,
+          'Authorization': `Bearer ${token}`,
         },
       });
+
+      if (!response.ok) {
+        setLoading(false);
+        const errorData = await response.json();
+        throw new Error(errorData.error);
+      }
+
       if (response.status === 201) {
         setLoading(false)
         toast.success("Added Successfully");
@@ -91,13 +98,12 @@ const ModalForm = ({ isOpen, closeModal }) => {
       setFormData({
         foodname: '',
         price: '',
-        image: ''
+        image: null
       });
       setErrors({});
-      // Close the modal after successful submission
+
     } catch (error) {
       setLoading(false)
-      console.log(error);
       toast.error(error.message);
     }
   };

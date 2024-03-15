@@ -12,15 +12,21 @@ function useApiData() {
         const res = await fetch(`${process.env.REACT_APP_API_URL}/menu`, {
           method: "GET",
           headers: {
-            Authorization: "Bearer " + token,
+            'Authorization': `Bearer ${token}`,
           },
         });
+
         if (!res.ok) {
-          throw new Error("Failed to fetch data");
+          const errorsData = res.json()
+          throw new Error(errorsData.error);
         }
-        const jsonData = await res.json();
-        const menuArray = jsonData.message;
-        setData(menuArray);
+
+        if(res.status === 200){
+          const jsonData = await res.json();
+          const menuArray = jsonData.message;
+          setData(menuArray);
+        }
+
       } catch (error) {
         toast.error(error.message);
       }

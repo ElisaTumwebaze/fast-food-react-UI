@@ -90,7 +90,7 @@ const Dashboard = () => {
                 <TableData>
                   <Image
                     src={item.photo}
-                    alt=""
+                    alt="photo"
                   />
                 </TableData>
                 <TableData>{item.food_name}</TableData>
