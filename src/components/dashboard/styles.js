@@ -4,6 +4,16 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
 
 export const Button = styled.button`
+padding: 10px 20px;
+font-size: 16px;
+background-color: #54585d;
+color: #fff;
+border: none;
+border-radius: 4px;
+cursor: pointer;
+&:hover {
+  background-color: #f98f39;
+}
   
 `;
 
@@ -58,7 +68,9 @@ export const TableHead = styled.th`
   color: #ffffff;
   font-weight: bold;
   text-align: left;
-  padding: 8px;
+  padding-top: 12px;
+  padding-left:8px;
+  padding-bottom: 12px;
   font-size: 18px;
   border: 1px solid #f98f39;
 `;
