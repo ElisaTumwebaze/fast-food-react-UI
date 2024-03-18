@@ -47,9 +47,12 @@ export const MenuItem = styled.div`
   }
 `;
 export const StyledIcon = styled(FontAwesomeIcon)`
-  color: #f98f39;
+  color: ${props => props.color || '#f98f39'};
   font-size: 24px;
   margin-right: 10px;
+  &:hover {
+    color: ${props => props.hoverColor || '#0078d7'};
+}
 `;
 
 export const Table = styled.table`
@@ -58,7 +61,7 @@ export const Table = styled.table`
 `;
 
 export const TableRow = styled.tr`
-  &:nth-child(even) {
+  &:hover {
     background-color: #f2f2f2;
   }
 `;
