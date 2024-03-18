@@ -1,8 +1,10 @@
 import React, { useState } from "react";
-import { ToastContainer} from "react-toastify";
+import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import useApiData from "./useApiData";
 import ModalForm from "../modalForm/ModalForm";
+import MenuModal from "../menuModal/MenuModal";
+import MenuTable from "./MenuTable";
 import {
   faHome,
   faUser,
@@ -12,23 +14,24 @@ import {
   faEdit,
 } from "@fortawesome/free-solid-svg-icons";
 
-import{
+import {
   Container,
   Sidebar,
   MenuItem,
   StyledIcon,
   MainContent,
-  Table,
-  TableHead,
-  TableData,
-  TableRow,
-  Image,
-  Button
+  Button,
 } from "./styles";
 
 const Dashboard = () => {
-  
   const [isOpen, setIsOpen] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
+  const [modalOpen, setModalOpen] = useState(false);
+
+  const closeMenuModal = () => {
+    setSelectedItem(null);
+    setModalOpen(false);
+  };
 
   const openModal = () => {
     setIsOpen(true);
@@ -39,7 +42,27 @@ const Dashboard = () => {
     setIsOpen(false);
   };
 
-  const {data} = useApiData();
+  const { data } = useApiData();
+
+  const handleItemClick = async (item) => {
+    try {
+      let token = localStorage.getItem("token");
+      const response = await fetch(
+        `${process.env.REACT_APP_API_URL}/menu/${item.food_id}`,
+        {
+          method: "GET",
+          headers: {
+            'Authorization': `Baerer ${token}`,
+          },
+        }
+      );
+      const itemDetails = await response.json();
+      setSelectedItem(itemDetails.message);
+      setModalOpen(true);
+    } catch (error) {
+      toast.error(error.message)
+    }
+  };
 
   return (
     <Container>
@@ -71,34 +94,15 @@ const Dashboard = () => {
       </Sidebar>
       <MainContent>
         <h1>Welcome To Fast Food Fast</h1>
-          <Button onClick={openModal}>Add Food</Button>
-          <ModalForm isOpen={isOpen} closeModal={closeModal} />
+        <Button onClick={openModal}>Add Food</Button>
+        <ModalForm isOpen={isOpen} closeModal={closeModal} />
         <p>Choose From The Menu.</p>
-        <Table>
-          <thead>
-            <TableRow>
-              <TableHead>ID</TableHead>
-              <TableHead>Photo</TableHead>
-              <TableHead>Food Name</TableHead>
-              <TableHead>Price in UGX</TableHead>
-            </TableRow>
-          </thead>
-          <tbody>
-            {data.map((item) => (
-              <TableRow key={item.food_id}>
-                <TableData>{item.food_id}</TableData>
-                <TableData>
-                  <Image
-                    src={item.photo}
-                    alt="photo"
-                  />
-                </TableData>
-                <TableData>{item.food_name}</TableData>
-                <TableData>{item.price}</TableData>
-              </TableRow>
-            ))}
-          </tbody>
-        </Table>
+        <MenuTable data={data} onItemClick={handleItemClick} />
+        <MenuModal
+          isOpen={modalOpen}
+          onClose={closeMenuModal}
+          menuItem={selectedItem}
+        />
       </MainContent>
       <ToastContainer position="top-right" autoClose={5000} />
     </Container>
