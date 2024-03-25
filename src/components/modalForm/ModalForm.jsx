@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import {toast } from "react-toastify";
 import Spinner from "../spinner/Spinner";
 import { faClose } from "@fortawesome/free-solid-svg-icons";
 import {
@@ -14,7 +14,7 @@ import {
   SubmitButton,
 } from "./Style";
 
-const ModalForm = ({ isOpen, closeModal }) => {
+const ModalForm = ({ isOpen, closeModal,onAdd }) => {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
@@ -91,17 +91,17 @@ const ModalForm = ({ isOpen, closeModal }) => {
 
       if (response.status === 201) {
         setLoading(false)
-        toast.success("Added Successfully");
+        const jsondata = await response.json()
+        onAdd(jsondata.message)
+        setFormData({
+          foodname: '',
+          price: '',
+          image: null
+        });
+        setErrors({});
+        closeModal()
       }
-
-      // Reset form fields after successful submission
-      setFormData({
-        foodname: '',
-        price: '',
-        image: null
-      });
-      setErrors({});
-
+      
     } catch (error) {
       setLoading(false)
       toast.error(error.message);
@@ -153,7 +153,6 @@ const ModalForm = ({ isOpen, closeModal }) => {
                 <SubmitButton type="submit">Submit</SubmitButton>
               )}
             </Form>
-            <ToastContainer position="top-right" autoClose={5000} />
           </ModalContent>
         </ModalWrapper>
       )}
