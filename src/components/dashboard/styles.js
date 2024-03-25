@@ -1,20 +1,17 @@
-import styled from 'styled-components';
+import styled from "styled-components";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 
-
-
 export const Button = styled.button`
-padding: 10px 20px;
-font-size: 16px;
-background-color: #54585d;
-color: #fff;
-border: none;
-border-radius: 4px;
-cursor: pointer;
-&:hover {
-  background-color: #f98f39;
-}
-  
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #54585d;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  &:hover {
+    background-color: #f98f39;
+  }
 `;
 
 export const Container = styled.div`
@@ -26,8 +23,10 @@ export const Container = styled.div`
 export const MainContent = styled.div`
   flex: 1;
   padding: 20px;
+  margin-left: 230px;
 `;
 export const Sidebar = styled.div`
+  position: fixed;
   width: 200px;
   background-color: #333;
   color: white;
@@ -47,12 +46,12 @@ export const MenuItem = styled.div`
   }
 `;
 export const StyledIcon = styled(FontAwesomeIcon)`
-  color: ${props => props.color || '#f98f39'};
+  color: ${(props) => props.color || "#f98f39"};
   font-size: 24px;
   margin-right: 10px;
   &:hover {
-    color: ${props => props.hoverColor || '#0078d7'};
-}
+    color: ${(props) => props.hoverColor || "#0078d7"};
+  }
 `;
 
 export const Table = styled.table`
@@ -72,7 +71,7 @@ export const TableHead = styled.th`
   font-weight: bold;
   text-align: left;
   padding-top: 12px;
-  padding-left:8px;
+  padding-left: 8px;
   padding-bottom: 12px;
   font-size: 18px;
   border: 1px solid #f98f39;
@@ -86,5 +85,5 @@ export const TableData = styled.td`
 export const Image = styled.img`
   width: 100px;
   height: 100px;
-  border-radius:50%;
+  border-radius: 50%;
 `;

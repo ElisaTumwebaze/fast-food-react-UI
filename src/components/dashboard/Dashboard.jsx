@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useState,useEffect} from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import useApiData from "./useApiData";
 import ModalForm from "../modalForm/ModalForm";
 import MenuModal from "../menuModal/MenuModal";
 import MenuTable from "./MenuTable";
+import fetchData from "../helpers/fetchData";
+
 import {
   faHome,
   faUser,
@@ -24,6 +25,7 @@ import {
 } from "./styles";
 
 const Dashboard = () => {
+  const [data, setData] = useState([]);
   const [isOpen, setIsOpen] = useState(false);
   const [selectedItem, setSelectedItem] = useState(null);
   const [modalOpen, setModalOpen] = useState(false);
@@ -42,26 +44,63 @@ const Dashboard = () => {
     setIsOpen(false);
   };
 
-  const { data } = useApiData();
+  useEffect(() => {
+
+    fetchMenuData();
+  }, []);
+
+  const fetchMenuData = async () => {
+    const endpoint = '/menu';
+    try {
+      const res = await fetchData(endpoint,{
+        method:'GET'
+      });
+        setData(res.message);
+    } catch (error) {
+      toast.error(error.message);
+    }
+  };
+
+  const handleAddFood = async (newData) => {
+    try{
+      setData([...data, newData]);
+      toast.success('Food item added successfully');
+
+    }catch(error){
+      toast.error('Failed to add food item');
+    }
+      
+  };
 
   const handleItemClick = async (item) => {
+
     try {
-      let token = localStorage.getItem("token");
-      const response = await fetch(
-        `${process.env.REACT_APP_API_URL}/menu/${item.food_id}`,
-        {
-          method: "GET",
-          headers: {
-            'Authorization': `Baerer ${token}`,
-          },
-        }
-      );
-      const itemDetails = await response.json();
-      setSelectedItem(itemDetails.message);
+      const endpoint = `/menu/${item.food_id}`;
+      const response = await fetchData(endpoint,{
+        method:'GET'
+      });
+
+      setSelectedItem(response.message);
       setModalOpen(true);
+      
     } catch (error) {
       toast.error(error.message)
     }
+  };
+
+  const handleDelete = async (food_id) => {
+    try{
+      const endpoint = `/menu/${food_id}`;
+      const res = await fetchData(endpoint,{
+          method:'DELETE'   
+      })
+      
+        setData(data.filter(item => item.food_id !== food_id));
+        toast.success(res.message)
+  }
+  catch(err){
+      toast.error(err.error);
+  }
   };
 
   return (
@@ -95,13 +134,20 @@ const Dashboard = () => {
       <MainContent>
         <h1>Welcome To Fast Food Fast</h1>
         <Button onClick={openModal}>Add Food</Button>
-        <ModalForm isOpen={isOpen} closeModal={closeModal} />
+        <ModalForm isOpen={isOpen}
+        onAdd={handleAddFood}
+         closeModal={closeModal} />
         <p>Choose From The Menu.</p>
-        <MenuTable data={data} onItemClick={handleItemClick} />
+        <MenuTable data={data} 
+        setData={setData}
+        onItemClick={handleItemClick}
+        onConfirmDelete={handleDelete}
+         />
         <MenuModal
           isOpen={modalOpen}
           onClose={closeMenuModal}
           menuItem={selectedItem}
+          onAdd={handleAddFood}
         />
       </MainContent>
       <ToastContainer position="top-right" autoClose={5000} />

@@ -1,21 +1,34 @@
+import { useState } from "react";
+import DeleteModal from "../deleteModal/deleteModal";
+import { faEdit, faTrash } from "@fortawesome/free-solid-svg-icons";
+
 import {
-    faEdit,
-    faTrash,
-  } from "@fortawesome/free-solid-svg-icons";
-  
-  import {
-    StyledIcon,
-    Table,
-    TableHead,
-    TableData,
-    TableRow,
-    Image,
-  } from "./styles";
+  StyledIcon,
+  Table,
+  TableHead,
+  TableData,
+  TableRow,
+  Image,
+} from "./styles";
 
-const MenuTable = ({data,onItemClick,color, hoverColor})=>{
+const MenuTable = ({
+  data,
+  onItemClick,
+  color,
+  hoverColor,
+  onConfirmDelete,
+}) => {
+  const [showDeleteModal, setShowDeleteModal] = useState(false);
+  const [selectedItemToDelete, setSelectedItemToDelete] = useState(null);
 
-    return(
-        <Table> 
+  const handleDelete = () => {
+    onConfirmDelete(selectedItemToDelete.food_id);
+    setShowDeleteModal(false);
+  };
+
+  return (
+    <>
+      <Table>
         <thead>
           <TableRow>
             <TableHead>ID</TableHead>
@@ -42,10 +55,14 @@ const MenuTable = ({data,onItemClick,color, hoverColor})=>{
         </thead>
         <tbody>
           {data.map((item) => (
-            <TableRow key={item.food_id} onClick={() => onItemClick(item)}>
+            <TableRow key={item.food_id}>
               <TableData>{item.food_id}</TableData>
               <TableData>
-                <Image src={item.photo} alt="photo" />
+                <Image
+                  src={item.photo}
+                  alt="photo"
+                  onClick={() => onItemClick(item)}
+                />
               </TableData>
               <TableData>{item.food_name}</TableData>
               <TableData>{item.price}</TableData>
@@ -65,15 +82,26 @@ const MenuTable = ({data,onItemClick,color, hoverColor})=>{
                   <StyledIcon
                     hoverColor="#ff0000"
                     icon={faTrash}
-                  ></StyledIcon>
+                    onClick={() => {
+                      setSelectedItemToDelete(item);
+                      setShowDeleteModal(true);
+                    }}
+                  />
                 }
               </TableData>
             </TableRow>
           ))}
         </tbody>
       </Table>
-
-    )
-}
+      {showDeleteModal && (
+        <DeleteModal
+          item={selectedItemToDelete}
+          onConfirmDelete={handleDelete}
+          onCancelDelete={() => setShowDeleteModal(false)}
+        />
+      )}
+    </>
+  );
+};
 
 export default MenuTable;
